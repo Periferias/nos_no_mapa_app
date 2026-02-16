@@ -1,0 +1,12 @@
+diff --git a/platform/android/CPackAndroidDeployQt.cmake.in b/platform/android/CPackAndroidDeployQt.cmake.in
+index 5783e7e05..5b1f25ff1 100644
+--- a/platform/android/CPackAndroidDeployQt.cmake.in
++++ b/platform/android/CPackAndroidDeployQt.cmake.in
+@@ -36,6 +36,7 @@ if(DEFINED ENV{KEYNAME}
+       --android-platform android-@ANDROID_TARGET_PLATFORM@
+       --gradle
+       --aab
++      --verbose
+     WORKING_DIRECTORY @CMAKE_BINARY_DIR@ COMMAND_ECHO STDERR
+     COMMAND_ERROR_IS_FATAL ANY)
+   execute_process(

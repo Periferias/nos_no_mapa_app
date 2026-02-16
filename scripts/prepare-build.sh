@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+source ${DIR}/../QField/scripts/version_number.sh
+
+echo "Building with APK_VERSION_CODE ${APK_VERSION_CODE}"
+
+TAG=$(cat build.yaml| shyaml get-value qfield.version)
+
+APP_NAME=$(cat build.yaml| shyaml get-value qfield.app_name)
+APP_PACKAGE_NAME=$(cat build.yaml| shyaml get-value qfield.app_package_suffix)
+APP_ICON=$(cat build.yaml| shyaml get-value qfield.app_icon)
+APP_VERSION_NAME=$(cat ${DIR}/../QField/RELEASE_NAME)
+APP_VERSION_STR="$(app_version_str ${TAG}) - ${APP_VERSION_NAME}"
+APK_VERSION_CODE=$(echo "$(expr ${GITHUB_RUN_NUMBER} \* 4 + $(arch_to_build_number "${TRIPLET}") + $(cat build.yaml| shyaml get-value qfield.version_offset))")
+
+export APP_NAME
+export APP_PACKAGE_NAME
+export APP_ICON
+export APP_ICON_PATH="${DIR}/../assets/icons"
+export APP_VERSION="${TAG}" # v1.2.3 or v1.2.3-rc4
+export APP_VERSION_STR
+export APK_VERSION_CODE
+export VERSION_CODE_CHECK=102000000
+
+echo "Version offset: $(cat build.yaml| shyaml get-value qfield.version_offset)"
+echo "Run number: ${GITHUB_RUN_NUMBER}"
+echo "Arch number: ${TRIPLET_NUMBER}"
+echo "APP_NAME: ${APP_NAME}"
+echo "APP_PACKAGE_NAME: ${APP_PACKAGE_NAME}"
+echo "APP_ICON: ${APP_ICON}"
+echo "APP_ICON_PATH: ${APP_ICON_PATH}"
+echo "APP_VERSION: ${APP_VERSION}"
+echo "APP_VERSION_STR: ${APP_VERSION_STR}"
+echo "ANDROID_NDK_PLATFORM: ${ANDROID_NDK_PLATFORM}"
+echo "APK_VERSION_CODE: ${APK_VERSION_CODE}"
+
+pushd ${DIR}/../QField
+git checkout ${TAG}
+popd
