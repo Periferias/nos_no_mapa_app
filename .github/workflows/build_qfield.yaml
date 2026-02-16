@@ -1,0 +1,165 @@
+name: 🧪 Build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  # Build Android packages
+  build:
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        triplet:
+          - arm64-android
+          - arm-neon-android
+
+    steps:
+      - name: 🐣 Checkout
+        uses: actions/checkout@v6
+
+      - name: ♻️ Check disk space
+        run: df . -h
+
+      - name: 🧹 Reclaim disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/*
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+
+      - name: ♻️ Check disk space
+        run: df . -h
+
+      - name: 🌾 Prepare variables
+        id: vars
+        shell: bash
+        run: |
+          NDK_VERSION=28.2.13676358
+          echo "JAVA_HOME=${JAVA_HOME_17_X64}" >> $GITHUB_ENV
+          echo "ANDROID_BUILD_TOOLS_VERSION=35.0.1" >> $GITHUB_ENV
+          echo "ANDROID_NDK_VERSION=${NDK_VERSION}" >> $GITHUB_ENV
+          echo "ANDROID_NDK=/usr/local/lib/android/sdk/ndk/${NDK_VERSION}" >> $GITHUB_ENV
+          echo "ANDROID_NDK_HOME=/usr/local/lib/android/sdk/ndk/${NDK_VERSION}" >> $GITHUB_ENV
+          echo "ANDROID_NDK_ROOT=/usr/local/lib/android/sdk/ndk/${NDK_VERSION}" >> $GITHUB_ENV
+          echo "ndk.dir=/usr/local/lib/android/sdk/ndk/${NDK_VERSION}" >> local.properties
+
+      - name: Install deps
+        run: |
+          pip install wheel shyaml
+
+      - name: Checkout QField
+        run: |
+          TAG=$(cat build.yaml| shyaml get-value qfield.version)
+          APP_PACKAGE_NAME=$(cat build.yaml| shyaml get-value qfield.app_package_suffix)
+          echo "TAG=${TAG}" >> $GITHUB_ENV
+          echo "APP_PACKAGE_NAME=${APP_PACKAGE_NAME}" >> $GITHUB_ENV
+          git clone --depth 1 --branch ${TAG} https://github.com/opengisch/QField.git
+          pushd QField
+          patch -p1 < ../patches/verbose.patch
+          popd
+
+      - name: 🪟 Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 8.0.x
+
+      - name: 🐵 Install Mono
+        run: |
+          sudo apt install ca-certificates gnupg
+          sudo gpg --homedir /tmp --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/mono-official-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+          sudo chmod +r /usr/share/keyrings/mono-official-archive-keyring.gpg
+          echo "deb [signed-by=/usr/share/keyrings/mono-official-archive-keyring.gpg] https://download.mono-project.com/repo/ubuntu stable-focal main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
+          sudo apt update
+          sudo apt install mono-devel
+
+      - name: 🐩 Install CMake and Ninja
+        uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: 3.29.0
+
+      - name: 🔨 Prepare build env
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gperf autopoint '^libxcb.*-dev' libx11-xcb-dev libsm-dev libegl1-mesa-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev autoconf-archive libgstreamer-gl1.0-0 libgstreamer-plugins-base1.0-0 libfuse2 libcups2-dev nasm libltdl-dev
+          wget https://github.com/Kitware/CMake/releases/download/v3.31.6/cmake-3.31.6-linux-x86_64.sh -O /tmp/cmakeinstall.sh
+          chmod +x /tmp/cmakeinstall.sh
+          sudo /tmp/cmakeinstall.sh --prefix=/usr/local --exclude-subdir
+          rm /tmp/cmakeinstall.sh
+
+      - name: Setup ccache
+        uses: hendrikmuhs/ccache-action@v1
+        with:
+          key: ${{ matrix.triplet }}-qt6
+          max-size: 200M
+
+      - name: 🌱 Install dependencies and generate project files
+        shell: bash
+        run: |
+          TRIPLET=${{ matrix.triplet}} source ./scripts/prepare-build.sh
+
+          cmake -S ${{ github.workspace }}/QField \
+                -B /home/runner/builddir \
+                -G Ninja \
+                -D CMAKE_BUILD_TYPE=Release \
+                -D ANDROID_SDK_ROOT=${ANDROID_SDK_ROOT} \
+                -D ANDROID_NDK_VERSION="${ANDROID_NDK_VERSION}" \
+                -D ANDROID_BUILD_TOOLS_VERSION="${ANDROID_BUILD_TOOLS_VERSION}" \
+                -D VCPKG_TARGET_TRIPLET="${{ matrix.triplet }}" \
+                -D VCPKG_HOST_TRIPLET="x64-linux" \
+                -D VCPKG_INSTALL_OPTIONS="--allow-unsupported" \
+                -D WITH_SPIX=OFF \
+                -D APP_VERSION="${APP_VERSION}" \
+                -D APK_VERSION_CODE="${APK_VERSION_CODE}" \
+                -D APP_VERSION_STR="${APP_VERSION_STR}" \
+                -D APP_PACKAGE_NAME="${APP_PACKAGE_NAME}" \
+                -D APP_ICON="${APP_ICON}" \
+                -D APP_ICON_PATH="${APP_ICON_PATH}" \
+                -D APP_NAME="${APP_NAME}" \
+                -D NUGET_USERNAME=opengisch \
+                -D NUGET_TOKEN=${{ secrets.GITHUB_TOKEN }} \
+                -D ANDROID_NDK_VERSION=${ANDROID_NDK_VERSION} \
+                -D ANDROID_SDK=/usr/local/lib/android/sdk/ \
+                -D WITH_ALL_FILES_ACCESS=$(cat build.yaml| shyaml get-value qfield.all_files_access) \
+                ${EXTRA_CMAKE_ARGS}
+
+
+      - name: 📑 Upload Dep Build Logs
+        uses: actions/upload-artifact@v6
+        if: failure()
+        with:
+          name: build-logs-${{ matrix.triplet }}
+          path: |
+            /home/runner/builddir/vcpkg-manifest-install.log
+
+            ${{ github.workspace }}/QField/vcpkg/base/buildtrees/**/*.log
+
+      - name: Setup signing key
+        env:
+          SIGNINGKEY: ${{ secrets.PLAYSTORE_SIGNINGKEY }}
+        run: |
+          echo "$SIGNINGKEY" | base64 --decode > ${{ github.workspace }}/QField/keystore.p12
+
+      - name: Package
+        env:
+          KEYNAME: qfield
+          KEYPASS: ${{ secrets.KEYPASS }}
+          STOREPASS: ${{ secrets.STOREPASS }}
+        run: |
+          ln -s /usr/local/lib/android/sdk/licenses /usr/local/lib/android/sdk/ndk/licenses
+          TRIPLET=${{ matrix.triplet}} source ./scripts/prepare-build.sh
+          cmake --build "/home/runner/builddir" --config Release
+          cmake --build  "/home/runner/builddir" --target bundle --config Release
+          mv /home/runner/builddir/src/app/android-build/build/outputs/apk/release/android-build-release-signed.apk /tmp/${{ env.APP_PACKAGE_NAME }}-${{ env.TAG }}-${{ matrix.triplet }}.apk
+
+      - uses: actions/upload-artifact@v6
+        if: failure()
+        with:
+          name: logs-${{ matrix.triplet }}
+          path: '/home/runner/builddir/_deps/vcpkg-src/buildtrees/**/*.log'
+
+      - uses: actions/upload-artifact@v6
+        with:
+          name: ${{ env.APP_PACKAGE_NAME }}-${{ env.TAG }}-${{ matrix.triplet }}
+          path: /tmp/*.apk
