@@ -5,7 +5,8 @@ source ${DIR}/../QField/scripts/version_number.sh
 
 echo "Building with APK_VERSION_CODE ${APK_VERSION_CODE}"
 
-TAG=$(cat build.yaml| shyaml get-value qfield.version)
+APP_VERSION=$(cat build.yaml| shyaml get-value qfield.version)
+QFIELD_VERSION=$(cat build.yaml| shyaml get-value qfield.qfield_version)
 
 APP_NAME=$(cat build.yaml| shyaml get-value qfield.app_name)
 APP_PACKAGE_NAME=$(cat build.yaml| shyaml get-value qfield.app_package_suffix)
@@ -18,7 +19,7 @@ export APP_NAME
 export APP_PACKAGE_NAME
 export APP_ICON
 export APP_ICON_PATH="${DIR}/../assets/icons"
-export APP_VERSION="${TAG}" # v1.2.3 or v1.2.3-rc4
+export APP_VERSION
 export APP_VERSION_STR
 export APK_VERSION_CODE
 export VERSION_CODE_CHECK=102000000
@@ -36,5 +37,5 @@ echo "ANDROID_NDK_PLATFORM: ${ANDROID_NDK_PLATFORM}"
 echo "APK_VERSION_CODE: ${APK_VERSION_CODE}"
 
 pushd ${DIR}/../QField
-git checkout ${TAG}
+git checkout ${QFIELD_VERSION}
 popd

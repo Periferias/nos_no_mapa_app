@@ -51,12 +51,15 @@ jobs:
 
       - name: Checkout QField
         run: |
-          TAG=$(cat build.yaml| shyaml get-value qfield.version)
+          APP_VERSION=$(cat build.yaml| shyaml get-value qfield.version)
+          QFIELD_VERSION=$(cat build.yaml| shyaml get-value qfield.qfield_version)
           APP_PACKAGE_NAME=$(cat build.yaml| shyaml get-value qfield.app_package_suffix)
-          echo "TAG=${TAG}" >> $GITHUB_ENV
+          echo "APP_VERSION=${APP_VERSION}" >> $GITHUB_ENV
+          echo "QFIELD_VERSION=${QFIELD_VERSION}" >> $GITHUB_ENV
           echo "APP_PACKAGE_NAME=${APP_PACKAGE_NAME}" >> $GITHUB_ENV
-          git clone --depth 1 --branch ${TAG} https://github.com/opengisch/QField.git
+          git clone https://github.com/opengisch/QField.git
           pushd QField
+          git checkout ${QFIELD_VERSION}
           patch -p1 < ../patches/verbose.patch
           popd
 
