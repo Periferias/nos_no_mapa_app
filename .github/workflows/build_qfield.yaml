@@ -118,6 +118,7 @@ jobs:
                 -D APP_VERSION_STR="${APP_VERSION_STR}" \
                 -D APP_PACKAGE_NAME="${APP_PACKAGE_NAME}" \
                 -D APP_ICON="${APP_ICON}" \
+                -D APP_ICON_PATH="${APP_ICON_PATH}" \
                 -D APP_NAME="${APP_NAME}" \
                 -D NUGET_USERNAME=opengisch \
                 -D NUGET_TOKEN=${{ secrets.GITHUB_TOKEN }} \
