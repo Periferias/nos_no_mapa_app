@@ -19,6 +19,7 @@ export APP_NAME
 export APP_PACKAGE_NAME
 export APP_ICON
 export APP_ICON_PATH="${DIR}/../assets/icons"
+export APP_THEME_PATH="${DIR}/../assets/theme/theme.json"
 export APP_VERSION
 export APP_VERSION_STR
 export APK_VERSION_CODE
