@@ -1,6 +1,6 @@
 qfield:
   version: v0.0.1
-  qfield_version: f5f0970
+  qfield_version: 6f604f0
   app_name: Mapa 
   app_package_suffix: mapa_das_periferias
   app_icon: mapa_das_periferias_logo
