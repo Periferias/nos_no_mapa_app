@@ -1,6 +1,6 @@
 {
   "darkThemeColors": {
-    "mainColor": "#0843F4",
+    "mainColor": "#FF301E",
     "mainOverlayColor": "#ffffff",
     "mainBackgroundColor": "#000716",
     "mainBackgroundColorSemiOpaque": "#bb000716",
@@ -20,11 +20,11 @@
     "groupBoxSurfaceColor": "#343437"
   },
   "lightThemeColors": {
-    "mainColor": "#0843F4",
+    "mainColor": "#FF301E",
     "mainOverlayColor": "#ffffff",
     "mainBackgroundColor": "#fffbfe",
     "mainBackgroundColorSemiOpaque": "#bbfffbfe",
-    "mainTextColor": "#1c1b1f",
+    "mainTextColor": "#0843F4",
     "mainTextDisabledColor": "#731c1b1f",
     "secondaryTextColor": "#757575",
     "controlBackgroundColor": "#ffffff",
@@ -50,7 +50,7 @@
     "light": "#ffffff",
     "goodColor": "#0843F4",
     "warningColor": "#ffa500",
-    "cloudColor": "#4c6dac",
+    "cloudColor": "#0843F4",
     "positionColor": "#64b5f6",
     "positionColorSemiOpaque": "#3364b5f6",
     "positionBackgroundColor": "#3364b5f6",
