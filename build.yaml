@@ -1,5 +1,5 @@
 qfield:
-  version: v0.9
+  version: v0.9.1
   qfield_version: 8ccedaf
   app_name: Mapa das Periferias
   app_package_suffix: mapa_das_periferias
