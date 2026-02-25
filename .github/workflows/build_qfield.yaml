@@ -146,11 +146,15 @@ jobs:
           echo "$SIGNINGKEY" | base64 --decode > ${{ github.workspace }}/QField/keystore.p12
 
       - name: Package
+        env:
+          KEYNAME: qfield
+          KEYPASS: ${{ secrets.KEYPASS }}
+          STOREPASS: ${{ secrets.STOREPASS }}
         run: |
           ln -s /usr/local/lib/android/sdk/licenses /usr/local/lib/android/sdk/ndk/licenses
           TRIPLET=${{ matrix.triplet }} source ./scripts/prepare-build.sh
           cmake --build "/home/runner/builddir" --config Release
-          mv /home/runner/builddir/src/app/android-build/build/outputs/apk/release/android-build-release-unsigned.apk /tmp/${{ env.APP_PACKAGE_NAME }}-${{ env.QFIELD_VERSION }}-${{ matrix.triplet }}.apk
+          mv /home/runner/builddir/src/app/android-build/build/outputs/apk/release/android-build-release-signed.apk /tmp/${{ env.APP_PACKAGE_NAME }}-${{ env.QFIELD_VERSION }}-${{ matrix.triplet }}.apk
 
       - uses: actions/upload-artifact@v6
         if: failure()
