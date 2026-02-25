@@ -153,7 +153,7 @@ jobs:
         run: |
           ln -s /usr/local/lib/android/sdk/licenses /usr/local/lib/android/sdk/ndk/licenses
           TRIPLET=${{ matrix.triplet }} source ./scripts/prepare-build.sh
-          cmake --build "/home/runner/builddir" --target bundle --config Release
+          cmake --build "/home/runner/builddir" --config Debug
           mv /home/runner/builddir/src/app/android-build/build/outputs/apk/debug/android-build-debug.apk /tmp/${{ env.APP_PACKAGE_NAME }}-${{ env.QFIELD_VERSION }}-${{ matrix.triplet }}.apk
 
       - uses: actions/upload-artifact@v6
