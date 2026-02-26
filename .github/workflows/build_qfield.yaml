@@ -147,13 +147,14 @@ jobs:
 
       - name: Package
         env:
-          KEYNAME: qfield
+          KEYNAME: ${{ secrets.KEYNAME }}
           KEYPASS: ${{ secrets.KEYPASS }}
           STOREPASS: ${{ secrets.STOREPASS }}
         run: |
           ln -s /usr/local/lib/android/sdk/licenses /usr/local/lib/android/sdk/ndk/licenses
           TRIPLET=${{ matrix.triplet }} source ./scripts/prepare-build.sh
           cmake --build "/home/runner/builddir" --config Release
+          cmake --build "/home/runner/builddir" --target bundle --config Release
           mv /home/runner/builddir/src/app/android-build/build/outputs/apk/release/android-build-release-signed.apk /tmp/${{ env.APP_PACKAGE_NAME }}-${{ env.QFIELD_VERSION }}-${{ matrix.triplet }}.apk
 
       - uses: actions/upload-artifact@v6
