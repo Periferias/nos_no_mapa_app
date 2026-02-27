@@ -126,6 +126,7 @@ jobs:
                 -D ANDROID_NDK_VERSION=${ANDROID_NDK_VERSION} \
                 -D ANDROID_SDK=/usr/local/lib/android/sdk/ \
                 -D WITH_ALL_FILES_ACCESS=$(cat build.yaml| shyaml get-value qfield.all_files_access) \
+                -D WITH_SAMPLE_PROJECTS=OFF \
                 ${EXTRA_CMAKE_ARGS}
 
 
