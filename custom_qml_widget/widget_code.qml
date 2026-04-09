@@ -8,14 +8,15 @@ ListView {
   id: categoryPicker
 
   property bool hasForm: typeof(form) !== "undefined"
-
   property int categoryWidth: Math.max(100, width / 5 - 16)
-  
   property string attribute: "category"
   property string currentCategory: hasForm ? form.attribute(attribute) : ""
-  
-  property string projectPath: expression.evaluate("@project_folder || '/'")
-    
+
+  // Compatibility for all OSes:
+  // Use @project_path and strip the filename inside the QGIS expression engine, so backslashes never reach
+  // QML/JS where they are eaten. char(92) = backslash, avoids QML/JS escape issues.
+  property string projectFolder: expression.evaluate("replace(file_path(@project_path), char(92), '/')") || "/"
+
   width: parent && parent.width > 0 ? parent.width : 400
   height: Math.max(100, width / 5 - 16)
   clip: true
@@ -65,7 +66,7 @@ ListView {
     rightInset: 0
     padding: 10
   
-    icon.source: "file://" + projectPath + categoryIcon
+    icon.source: "file:///" + categoryPicker.projectFolder + "/" + categoryIcon
     icon.color: categoryPicker.currentCategory == categoryValue ? "#ffffff" : Material.foreground
     icon.width: parent.width
     icon.height: parent.width
@@ -111,4 +112,3 @@ ListView {
   	}
   }
 }
-
