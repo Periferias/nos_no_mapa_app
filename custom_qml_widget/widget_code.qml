@@ -10,13 +10,18 @@ ListView {
   property bool hasForm: typeof(form) !== "undefined"
   property int categoryWidth: Math.max(100, width / 5 - 16)
   property string attribute: "category"
-  property string currentCategory: hasForm ? form.attribute(attribute) : ""
-
-  // Compatibility for all OSes:
-  // Use @project_path and strip the filename inside the QGIS expression engine, so backslashes never reach
-  // QML/JS where they are eaten. char(92) = backslash, avoids QML/JS escape issues.
-  property string projectFolder: expression.evaluate("replace(file_path(@project_path), char(92), '/')") || "/"
-
+  property string currentCategory: typeof(attributes) !== "undefined" ? attributes[attribute] : ""
+  
+  // @project_folder gives e.g. "/data/.../project/" on Android, "C:\Users\...\project\" on Windows.
+  // On Android "file://" + "/data/..." = "file:///data/..." (correct).
+  // On Windows we need to replace backslashes and prepend "/" so
+  // "file://" + "/C:/Users/..." = "file:///C:/Users/..." (correct).
+  property string projectPath: {
+    var raw = expression.evaluate("replace(@project_folder, char(92), '/') || '/'")
+    if (raw.charAt(0) !== "/") raw = "/" + raw
+    return raw
+  }
+    
   width: parent && parent.width > 0 ? parent.width : 400
   height: Math.max(100, width / 5 - 16)
   clip: true
@@ -66,7 +71,7 @@ ListView {
     rightInset: 0
     padding: 10
   
-    icon.source: "file:///" + categoryPicker.projectFolder + "/" + categoryIcon
+    icon.source: "file://" + projectPath + categoryIcon
     icon.color: categoryPicker.currentCategory == categoryValue ? "#ffffff" : Material.foreground
     icon.width: parent.width
     icon.height: parent.width
