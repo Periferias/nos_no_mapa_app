@@ -121,6 +121,7 @@ jobs:
                 -D APP_ICON_PATH="${APP_ICON_PATH}" \
                 -D APP_THEME_PATH="${APP_THEME_PATH}" \
                 -D APP_NAME="${APP_NAME}" \
+                -D APP_BUNDLED_PLUGINS="${APP_BUNDLED_PLUGINS}" \
                 -D NUGET_USERNAME=opengisch \
                 -D NUGET_TOKEN=${{ secrets.GITHUB_TOKEN }} \
                 -D ANDROID_NDK_VERSION=${ANDROID_NDK_VERSION} \
@@ -128,7 +129,6 @@ jobs:
                 -D WITH_ALL_FILES_ACCESS=$(cat build.yaml| shyaml get-value qfield.all_files_access) \
                 -D WITH_SAMPLE_PROJECTS=OFF \
                 ${EXTRA_CMAKE_ARGS}
-
 
       - name: 📑 Upload Dep Build Logs
         uses: actions/upload-artifact@v6
@@ -162,7 +162,7 @@ jobs:
         if: failure()
         with:
           name: logs-${{ matrix.triplet }}
-          path: '/home/runner/builddir/_deps/vcpkg-src/buildtrees/**/*.log'
+          path: "/home/runner/builddir/_deps/vcpkg-src/buildtrees/**/*.log"
 
       - uses: actions/upload-artifact@v6
         with:

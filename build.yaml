@@ -6,3 +6,6 @@ qfield:
   app_icon: mapa_das_periferias_logo
   version_offset: 0
   all_files_access: OFF
+  bundled_plugins:
+    - dir: qfield-next-theme
+      url: https://github.com/hotosm/qfield-next-theme-plugin/releases/latest/download/qfield-next-theme-plugin.zip
