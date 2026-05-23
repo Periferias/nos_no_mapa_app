@@ -15,6 +15,22 @@ APP_VERSION_NAME=$(cat ${DIR}/../QField/RELEASE_NAME)
 APP_VERSION_STR="$(app_version_str ${TAG}) - ${APP_VERSION_NAME}"
 APK_VERSION_CODE=$(echo "$(expr ${GITHUB_RUN_NUMBER} \* 4 + $(arch_to_build_number "${TRIPLET}") + $(cat build.yaml| shyaml get-value qfield.version_offset))")
 
+PLUGINS_STAGING="${DIR}/../bundled-plugins"
+rm -rf "${PLUGINS_STAGING}"
+mkdir -p "${PLUGINS_STAGING}"
+
+PLUGIN_COUNT=$(cat build.yaml| shyaml get-length qfield.bundled_plugins 2>/dev/null || echo 0)
+for ((i=0; i<PLUGIN_COUNT; i++)); do
+  PLUGIN_DIR=$(cat build.yaml| shyaml get-value qfield.bundled_plugins.${i}.dir)
+  PLUGIN_URL=$(cat build.yaml| shyaml get-value qfield.bundled_plugins.${i}.url)
+
+  echo "Fetching bundled plugin: ${PLUGIN_DIR}"
+  curl -fSL "${PLUGIN_URL}" -o "${PLUGINS_STAGING}/${PLUGIN_DIR}.zip"
+  mkdir -p "${PLUGINS_STAGING}/${PLUGIN_DIR}"
+  unzip -q "${PLUGINS_STAGING}/${PLUGIN_DIR}.zip" -d "${PLUGINS_STAGING}/${PLUGIN_DIR}"
+  rm "${PLUGINS_STAGING}/${PLUGIN_DIR}.zip"
+done
+
 export APP_NAME
 export APP_PACKAGE_NAME
 export APP_ICON
@@ -24,6 +40,10 @@ export APP_VERSION
 export APP_VERSION_STR
 export APK_VERSION_CODE
 export VERSION_CODE_CHECK=102000000
+
+if [[ ${PLUGIN_COUNT} -gt 0 ]]; then
+  export APP_BUNDLED_PLUGINS="${PLUGINS_STAGING}"
+fi
 
 echo "Version offset: $(cat build.yaml| shyaml get-value qfield.version_offset)"
 echo "Run number: ${GITHUB_RUN_NUMBER}"
@@ -36,6 +56,7 @@ echo "APP_VERSION: ${APP_VERSION}"
 echo "APP_VERSION_STR: ${APP_VERSION_STR}"
 echo "ANDROID_NDK_PLATFORM: ${ANDROID_NDK_PLATFORM}"
 echo "APK_VERSION_CODE: ${APK_VERSION_CODE}"
+echo "APP_BUNDLED_PLUGINS: ${APP_BUNDLED_PLUGINS}"
 
 pushd ${DIR}/../QField
 git checkout ${QFIELD_VERSION}
