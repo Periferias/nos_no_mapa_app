@@ -1,9 +1,9 @@
 qfield:
-  version: v0.9.11
-  qfield_version: v4.1.12
-  app_name: Mapa das Periferias
-  app_package_suffix: mapa_das_periferias
-  app_icon: mapa_das_periferias_logo
+  version: v1.0.0
+  qfield_version: v4.1.14
+  app_name: Nós no Mapa
+  app_package_suffix: nos_no_mapa
+  app_icon: nosnomapa_colorida
   version_offset: 0
   all_files_access: OFF
   bundled_plugins:
