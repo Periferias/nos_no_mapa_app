@@ -10,7 +10,7 @@ ListView {
   property bool hasForm: typeof(form) !== "undefined"
   property int categoryWidth: Math.max(100, width / 5 - 16)
   property string attribute: "category"
-  property string currentCategory: typeof(attributes) !== "undefined" ? attributes[attribute] : ""
+  property string currentCategory: expression.evaluate("\"category\"") !== "" && hasForm ? form.model.attribute(attribute) : ""
   
   // @project_folder gives e.g. "/data/.../project/" on Android, "C:\Users\...\project\" on Windows.
   // On Android "file://" + "/data/..." = "file:///data/..." (correct).
@@ -117,3 +117,4 @@ ListView {
   	}
   }
 }
+
