@@ -82,9 +82,9 @@ ListView {
       implicitHeight: 25
       radius: 0
       clip: true
-	  color: categoryPicker.currentCategory == categoryValue ? categoryColor : "transparent"
-	  border.color: hasForm && form.state !== "ReadOnly" ? categoryColor : "transparent"
-	  border.width: 4
+      color: categoryPicker.currentCategory == categoryValue ? categoryColor : "transparent"
+      border.color: hasForm && form.state !== "ReadOnly" ? categoryColor : "transparent"
+      border.width: 4
     
       Ripple {
         id: ripple
@@ -109,12 +109,11 @@ ListView {
 
   Component.onCompleted: {
     for(let i = 0; i < categoryPicker.model.count; i++) {
-  	  const item = categoryPicker.model.get(i);
-  	  if (item.categoryValue == categoryPicker.currentCategory) {
-  		categoryPicker.positionViewAtIndex(i,ListView.Center);
-  		break;
-  	  }
-  	}
+      const item = categoryPicker.model.get(i);
+      if (item.categoryValue == categoryPicker.currentCategory) {
+      categoryPicker.positionViewAtIndex(i,ListView.Center);
+      break;
+      }
+    }
   }
 }
-
