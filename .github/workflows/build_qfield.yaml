@@ -157,6 +157,10 @@ jobs:
           cmake --build "/home/runner/builddir" --config Release
           cmake --build "/home/runner/builddir" --target bundle --config Release
           mv /home/runner/builddir/src/app/android-build/build/outputs/apk/release/android-build-release-signed.apk /tmp/${{ env.APP_PACKAGE_NAME }}-${{ env.QFIELD_VERSION }}-${{ matrix.triplet }}.apk
+          ls -la /home/runner/builddir/src/app/android-build/build/outputs/
+          ls -la /home/runner/builddir/src/app/android-build/build/outputs/bundle/
+          ls -la /home/runner/builddir/src/app/android-build/build/outputs/bundle/release/
+          mv /home/runner/builddir/src/app/android-build/build/outputs/bundle/release/android-build-release.aab /tmp/${{ env.APP_PACKAGE_NAME }}-${{ env.QFIELD_VERSION }}-${{ matrix.triplet }}.aab
 
       - uses: actions/upload-artifact@v6
         if: failure()
@@ -166,5 +170,10 @@ jobs:
 
       - uses: actions/upload-artifact@v6
         with:
-          name: ${{ env.APP_PACKAGE_NAME }}-${{ env.QFIELD_VERSION }}-${{ matrix.triplet }}
+          name: ${{ env.APP_PACKAGE_NAME }}-${{ env.QFIELD_VERSION }}-${{ matrix.triplet }}-apk
           path: /tmp/*.apk
+
+      - uses: actions/upload-artifact@v6
+        with:
+          name: ${{ env.APP_PACKAGE_NAME }}-${{ env.QFIELD_VERSION }}-${{ matrix.triplet }}-aab
+          path: /tmp/*.aab
