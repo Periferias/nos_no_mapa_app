@@ -1,6 +1,6 @@
 qfield:
-  version: v1.0.0
-  qfield_version: v4.1.14
+  version: v1.0.5
+  qfield_version: v4.2.4
   app_name: Nós no Mapa
   app_package_suffix: nosnomapa
   app_icon: nosnomapa_colorida
