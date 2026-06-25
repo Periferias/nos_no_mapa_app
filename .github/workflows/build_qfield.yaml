@@ -61,6 +61,7 @@ jobs:
           pushd QField
           git checkout ${QFIELD_VERSION}
           patch -p1 < ../patches/verbose.patch
+          patch -p1 < ../patches/default_qfieldcloud_server.patch
           popd
 
       - name: 🪟 Setup .NET
