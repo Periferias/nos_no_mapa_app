@@ -1,0 +1,14 @@
+diff --git a/resources/templates/oauth2_verification_finished.html b/resources/templates/oauth2_verification_finished.html
+index 2c20156a81..de0dc0fe65 100644
+--- a/resources/templates/oauth2_verification_finished.html
++++ b/resources/templates/oauth2_verification_finished.html
+@@ -22,7 +22,7 @@
+     </style>
+   </head>
+   <body>
+-    <h2>QField OAuth2 verification has finished</h2>
+-    <p>If you have not been returned to QField, bring the application to the forefront.</p>
++    <h2>Quase lá! Só falta voltar para o app.</h2>
++    <p>O seu login na Nós Periféricos foi realizado com sucesso, mas parece que não foi possível te redirecionar automaticamente de volta para o aplicativo. Para continuar mapeando, retorne ao Nós no Mapa.</p>
+   </body>
+ </html>
