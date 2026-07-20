@@ -1,5 +1,5 @@
 diff --git a/src/core/qfieldcloud/qfieldcloudconnection.cpp b/src/core/qfieldcloud/qfieldcloudconnection.cpp
-index 2a7aec99c..4714730d7 100644
+index 525169412..660dc1fb4 100644
 --- a/src/core/qfieldcloud/qfieldcloudconnection.cpp
 +++ b/src/core/qfieldcloud/qfieldcloudconnection.cpp
 @@ -210,7 +210,7 @@ void QFieldCloudConnection::setUrl( const QString &url )
@@ -12,7 +12,7 @@ index 2a7aec99c..4714730d7 100644
  
  QStringList QFieldCloudConnection::urls() const
 diff --git a/src/qml/QFieldCloudLogin.qml b/src/qml/QFieldCloudLogin.qml
-index 2b5ad3117..f299d8c6f 100644
+index 22cda4064..04606b0bc 100644
 --- a/src/qml/QFieldCloudLogin.qml
 +++ b/src/qml/QFieldCloudLogin.qml
 @@ -36,12 +36,12 @@ Item {
@@ -20,18 +20,18 @@ index 2b5ad3117..f299d8c6f 100644
        fillMode: Image.PreserveAspectFit
        smooth: true
 -      source: cloudConnection.url != cloudConnection.defaultUrl && cloudConnection.serverInformation.whitelabel.logoMain !== '' ? cloudConnection.serverInformation.whitelabel.logoMain : "qrc:/images/qfieldcloud_logo.svg"
-+      source: cloudConnection.url != cloudConnection.defaultUrl && cloudConnection.serverInformation.whitelabel.logoMain !== '' ? cloudConnection.serverInformation.whitelabel.logoMain : "https://api-nos-no-mapa-dev.periferias.cidades.gov.br/staticfiles/nosnomapa_azul.b22b0c28f30e.svg"
++      source: cloudConnection.url != cloudConnection.defaultUrl && cloudConnection.serverInformation.whitelabel.logoMain !== '' ? cloudConnection.serverInformation.whitelabel.logoMain : "https://nos-no-mapa.periferias.cidades.gov.br/staticfiles/nosnomapa_negativo_defeso.2ce07404e112.png"
  
        onStatusChanged: {
          // In case the whitelabel logo fails to load, revert to the default QFieldCloud logo
          if (status == Image.Error) {
 -          source = "qrc:/images/qfieldcloud_logo.svg";
-+          source = "https://api-nos-no-mapa-dev.periferias.cidades.gov.br/staticfiles/nosnomapa_azul.b22b0c28f30e.svg";
++          source = "https://nos-no-mapa.periferias.cidades.gov.br/staticfiles/nosnomapa_negativo_defeso.2ce07404e112.png"
          }
        }
  
 diff --git a/src/qml/WelcomeScreen.qml b/src/qml/WelcomeScreen.qml
-index 4087ee9e8..7cf587aa6 100644
+index abf5ec672..b9abfe14c 100644
 --- a/src/qml/WelcomeScreen.qml
 +++ b/src/qml/WelcomeScreen.qml
 @@ -509,7 +509,7 @@ Page {
@@ -39,7 +39,7 @@ index 4087ee9e8..7cf587aa6 100644
                iconSource: Theme.getThemeVectorIcon("ic_cloud_active_24dp")
                iconColor: Theme.cloudColor
 -              label: qsTr("QFieldCloud\nprojects")
-+              label: qsTr("Nós no Mapa\nprojects")
++              label: qsTr("Projetos\nNós no Mapa")
                onClicked: showQFieldCloudScreen()
              }
  
