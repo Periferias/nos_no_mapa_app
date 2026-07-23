@@ -10,3 +10,6 @@ qfield:
     - dir: qfield-next-theme
       url: https://github.com/hotosm/qfield-next-theme-plugin/releases/download/1.0/qfield-next-theme-plugin.zip
       sha512: 253d7e16b497a2649d4561fb287a49431905d86d8440b4417120564b34c07513d93a394d88ec99b00be558f1c733d9b1ddad204494e6d651d74e8a86bc3c7cf6
+    - dir: qfield-simplified-ui
+      url: https://github.com/hotosm/qfield-simplified-ui-plugin/releases/download/1.0/qfield-simplified-ui-plugin.zip
+      sha512: 77ac07e4c558b6ab19c1f4bee7f76e02c54031f802aa5d91b956990a26c6352a51d73acb143959de4a774df60a62c1ee378c9e6e291d24738ea5a89bba1b5bea
