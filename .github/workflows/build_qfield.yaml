@@ -63,6 +63,7 @@ jobs:
           patch -p1 < ../patches/verbose.patch
           patch -p1 < ../patches/default_qfieldcloud_server.patch
           patch -p1 < ../patches/oauth_translation.patch
+          patch -p1 < ../patches/launcher_icon_cmake_fix.patch
           popd
 
       - name: 🪟 Setup .NET
