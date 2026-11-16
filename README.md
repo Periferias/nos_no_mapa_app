@@ -1,0 +1,2 @@
+This work was partially supported by the Wellcome Trust through the grant Participatory Analytics for Climate-Health Adaptation in Disadvantaged Urban Communities in Brazil (PACHA) [grant 328942/Z/25/Z], PI: Joao Porto de Albuquerque. For the purpose of open access, the author(s) have applied the GPLv3 License.
+
